@@ -25,7 +25,7 @@ import (
 	dto "github.com/prometheus/client_model/go"
 
 	"github.com/golang/protobuf/proto" //nolint:staticcheck // Ignore SA1019. Need to keep deprecated package for compatibility.
-	"github.com/prometheus/common/model"
+	"github.com/thomas-dfn/common/model"
 )
 
 // A stateFn is a function that represents a state in a state machine. By
@@ -492,12 +492,9 @@ func (p *TextParser) startTimestamp() stateFn {
 // readingHelp represents the state where the last byte read (now in
 // p.currentByte) is the first byte of the docstring after 'HELP'.
 func (p *TextParser) readingHelp() stateFn {
-	fmt.Println("")
-	fmt.Println("text_parse: readingHelp")
-	fmt.Println("")
-	fmt.Println("current HELP line for metric ", p.currentMF.GetName(), p.currentMF.Help )
-	fmt.Println("new HELP line: ", proto.String(p.currentToken.String()) )
-	fmt.Println("")
+	fmt.Printf("\ntext_parse: readingHelp\n")
+	fmt.Printf("current HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
+	fmt.Printf("new HELP line: %s\n", p.currentToken.String() )
 	
 	if p.currentMF.Help != nil {
 		p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
