@@ -496,7 +496,7 @@ func (p *TextParser) readingHelp() stateFn {
 	
 	if p.currentMF.Help != nil {
 		fmt.Printf("current HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
-		fmt.Printf("new HELP line: %s\n", proto.String(p.currentToken.String()) )
+		fmt.Printf("new HELP line: %s\n", *(proto.String(p.currentToken.String())) )
 		p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
 		return nil
 	}
