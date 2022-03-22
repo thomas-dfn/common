@@ -518,14 +518,25 @@ func (p *TextParser) readingHelp() stateFn {
 // readingType represents the state where the last byte read (now in
 // p.currentByte) is the first byte of the type hint after 'HELP'.
 func (p *TextParser) readingType() stateFn {
-	if p.currentMF.Type != nil {
-		p.parseError(fmt.Sprintf("second TYPE line for metric name %q, or TYPE reported after samples", p.currentMF.GetName()))
-		return nil
-	}
+	fmt.Printf("\ntext_parse: readingType\n")
+
 	// Rest of line is the type.
 	if p.readTokenUntilNewline(false); p.err != nil {
 		return nil // Unexpected end of input.
 	}
+
+	fmt.Printf("found TYPE line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
+
+	if p.currentMF.Type != nil {
+		fmt.Printf("previous TYPE line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Type) )
+		if strings.ToLower( *(p.currentMF.Type) ) != strings.ToLower( p.currentToken.String() ) {
+			p.parseError(fmt.Sprintf("second TYPE line for metric name %q, or TYPE reported after samples", p.currentMF.GetName()))
+			return nil
+		} else {
+			fmt.Printf("don't mind identical TYPE lines\n")
+		}
+	}
+	
 	metricType, ok := dto.MetricType_value[strings.ToUpper(p.currentToken.String())]
 	if !ok {
 		p.parseError(fmt.Sprintf("unknown metric type %q", p.currentToken.String()))
