@@ -492,6 +492,13 @@ func (p *TextParser) startTimestamp() stateFn {
 // readingHelp represents the state where the last byte read (now in
 // p.currentByte) is the first byte of the docstring after 'HELP'.
 func (p *TextParser) readingHelp() stateFn {
+	fmt.Println("")
+	fmt.Println("text_parse: readingHelp")
+	fmt.Println("")
+	fmt.Println("current HELP line for metric ", p.currentMF.GetName(), p.currentMF.Help )
+	fmt.Println("new HELP line: ", proto.String(p.currentToken.String()) )
+	fmt.Println("")
+	
 	if p.currentMF.Help != nil {
 		p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
 		return nil
