@@ -494,16 +494,23 @@ func (p *TextParser) startTimestamp() stateFn {
 func (p *TextParser) readingHelp() stateFn {
 	fmt.Printf("\ntext_parse: readingHelp\n")
 	
-	if p.currentMF.Help != nil {
-		fmt.Printf("current HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
-		fmt.Printf("new HELP line: %s\n", *(proto.String(p.currentToken.String())) )
-		p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
-		return nil
-	}
 	// Rest of line is the docstring.
 	if p.readTokenUntilNewline(true); p.err != nil {
 		return nil // Unexpected end of input.
 	}
+
+	fmt.Printf("found HELP line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
+
+	if p.currentMF.Help != nil {
+		fmt.Printf("previous HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
+		if strings.ToLower( *(p.currentMF.Help) ) != strings.ToLower( p.currentToken.String() ) {
+			p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
+			return nil
+		} else {
+			fmt.Printf("don't mind identical HELP lines\n")
+		}
+	}
+	
 	p.currentMF.Help = proto.String(p.currentToken.String())
 	return p.startOfLine
 }
