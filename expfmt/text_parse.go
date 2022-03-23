@@ -537,7 +537,7 @@ func (p *TextParser) readingType() stateFn {
 
 	if p.currentMF.Type != nil {
 		fmt.Printf("previous TYPE line for metric %s: %d\n", p.currentMF.GetName(), *(p.currentMF.Type) )
-		if *(p.currentMF.Type) != metricType {
+		if *(p.currentMF.Type) != dto.MetricType(metricType).Enum() {
 			p.parseError(fmt.Sprintf("second TYPE line for metric name %q, or TYPE reported after samples", p.currentMF.GetName()))
 			return nil
 		} else {
