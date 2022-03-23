@@ -527,9 +527,17 @@ func (p *TextParser) readingType() stateFn {
 
 	fmt.Printf("found TYPE line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
 
+	metricType, ok := dto.MetricType_value[strings.ToUpper(p.currentToken.String())]
+	if !ok {
+		p.parseError(fmt.Sprintf("unknown metric type %q", p.currentToken.String()))
+		return nil
+	} else {
+		fmt.Printf("   type of metric: %d\n", metricType )
+	}
+
 	if p.currentMF.Type != nil {
-		fmt.Printf("previous TYPE line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Type) )
-		if strings.ToLower( *(p.currentMF.Type) ) != strings.ToLower( p.currentToken.String() ) {
+		fmt.Printf("previous TYPE line for metric %s: %d\n", p.currentMF.GetName(), *(p.currentMF.Type) )
+		if *(p.currentMF.Type) != metricType {
 			p.parseError(fmt.Sprintf("second TYPE line for metric name %q, or TYPE reported after samples", p.currentMF.GetName()))
 			return nil
 		} else {
@@ -537,11 +545,6 @@ func (p *TextParser) readingType() stateFn {
 		}
 	}
 	
-	metricType, ok := dto.MetricType_value[strings.ToUpper(p.currentToken.String())]
-	if !ok {
-		p.parseError(fmt.Sprintf("unknown metric type %q", p.currentToken.String()))
-		return nil
-	}
 	p.currentMF.Type = dto.MetricType(metricType).Enum()
 	return p.startOfLine
 }
