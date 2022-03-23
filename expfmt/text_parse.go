@@ -503,12 +503,12 @@ func (p *TextParser) readingHelp() stateFn {
 
 	if p.currentMF.Help != nil {
 		fmt.Printf("previous HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
-		if strings.ToLower( *(p.currentMF.Help) ) != strings.ToLower( p.currentToken.String() ) {
-			p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
-			return nil
-		} else {
-			fmt.Printf("don't mind identical HELP lines\n")
-		}
+//		if strings.ToLower( *(p.currentMF.Help) ) != strings.ToLower( p.currentToken.String() ) {
+//			p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
+//			return nil
+//		} else {
+		fmt.Printf("don't mind (nearly) identical HELP lines\n")
+//		}
 	}
 	
 	p.currentMF.Help = proto.String(p.currentToken.String())
