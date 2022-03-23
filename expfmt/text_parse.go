@@ -492,22 +492,22 @@ func (p *TextParser) startTimestamp() stateFn {
 // readingHelp represents the state where the last byte read (now in
 // p.currentByte) is the first byte of the docstring after 'HELP'.
 func (p *TextParser) readingHelp() stateFn {
-	fmt.Printf("\ntext_parse: readingHelp\n")
+//	fmt.Printf("\ntext_parse: readingHelp\n")
 	
 	// Rest of line is the docstring.
 	if p.readTokenUntilNewline(true); p.err != nil {
 		return nil // Unexpected end of input.
 	}
 
-	fmt.Printf("found HELP line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
+//	fmt.Printf("found HELP line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
 
 	if p.currentMF.Help != nil {
-		fmt.Printf("previous HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
+//		fmt.Printf("previous HELP line for metric %s: %s\n", p.currentMF.GetName(), *(p.currentMF.Help) )
 //		if strings.ToLower( *(p.currentMF.Help) ) != strings.ToLower( p.currentToken.String() ) {
 //			p.parseError(fmt.Sprintf("second HELP line for metric name %q", p.currentMF.GetName()))
 //			return nil
 //		} else {
-		fmt.Printf("don't mind (nearly) identical HELP lines\n")
+//		fmt.Printf("don't mind (nearly) identical HELP lines\n")
 //		}
 	}
 	
@@ -518,30 +518,30 @@ func (p *TextParser) readingHelp() stateFn {
 // readingType represents the state where the last byte read (now in
 // p.currentByte) is the first byte of the type hint after 'HELP'.
 func (p *TextParser) readingType() stateFn {
-	fmt.Printf("\ntext_parse: readingType\n")
+//	fmt.Printf("\ntext_parse: readingType\n")
 
 	// Rest of line is the type.
 	if p.readTokenUntilNewline(false); p.err != nil {
 		return nil // Unexpected end of input.
 	}
 
-	fmt.Printf("found TYPE line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
+//	fmt.Printf("found TYPE line for metric %s: %s\n", p.currentMF.GetName(), p.currentToken.String() )
 
 	metricType, ok := dto.MetricType_value[strings.ToUpper(p.currentToken.String())]
 	if !ok {
 		p.parseError(fmt.Sprintf("unknown metric type %q", p.currentToken.String()))
 		return nil
-	} else {
-		fmt.Printf("   type of metric: %d\n", metricType )
+//	} else {
+//		fmt.Printf("   type of metric: %d\n", metricType )
 	}
 
 	if p.currentMF.Type != nil {
-		fmt.Printf("previous TYPE line for metric %s: %d\n", p.currentMF.GetName(), *(p.currentMF.Type) )
+//		fmt.Printf("previous TYPE line for metric %s: %d\n", p.currentMF.GetName(), *(p.currentMF.Type) )
 		if *(p.currentMF.Type) != *(dto.MetricType(metricType).Enum()) {
 			p.parseError(fmt.Sprintf("second TYPE line for metric name %q, or TYPE reported after samples", p.currentMF.GetName()))
 			return nil
-		} else {
-			fmt.Printf("don't mind identical TYPE lines\n")
+//		} else {
+//			fmt.Printf("don't mind identical TYPE lines\n")
 		}
 	}
 	
